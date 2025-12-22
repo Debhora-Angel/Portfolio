@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
   FaCode, 
+  FaEye ,
+  FaBug,
   FaDownload, 
   FaEnvelope, 
   FaPhone, 
@@ -60,6 +62,8 @@ const Portfolio = () => {
     email: '',
     message: ''
   });
+  const [showCertModal, setShowCertModal] = useState(false);
+  const [activeCertificate, setActiveCertificate] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [downloadProgress, setDownloadProgress] = useState(0);
@@ -159,7 +163,7 @@ useEffect(() => {
     
     if (progress >= 100) {
       clearInterval(interval);
-      const resumeUrl = '/resume/Debhora_Angel_Gudla_Resume.pdf';
+      const resumeUrl = `${process.env.PUBLIC_URL}/resume/Debhora_Angel_Gudla_Resume.pdf`;
       const a = document.createElement('a');
       a.href = resumeUrl;
       a.download = 'Debhora_Angel_Gudla_Resume.pdf';
@@ -1013,10 +1017,11 @@ useEffect(() => {
 
 
   const certifications = [
-    { name: 'Cloud Computing', organization: 'NPTEL', score: '90% (Top 2%)', icon: <FaCloud /> },
-    { name: 'Learning Analytics Tools', organization: 'NPTEL', score: '81%', icon: <GiProcessor /> },
-    { name: 'Cybersecurity Essentials', organization: 'Cisco Networking Academy', score: 'Completed', icon: <FaShieldAlt /> },
-    { name: 'HTML, CSS, and Javascript for Web Developers', organization: 'Johns Hopkins University - Coursera', score: 'Completed', icon: <FaCode /> },
+    { name: 'Cloud Computing', organization: 'NPTEL', score: '90% (Top 2%)', icon: <FaCloud />,file: `${process.env.PUBLIC_URL}/certificates/cloud-computing.pdf`, },
+    { name: 'Learning Analytics Tools', organization: 'NPTEL', score: '81%', icon: <GiProcessor />,file: `${process.env.PUBLIC_URL}/certificates/learning-analytics.pdf`, },
+    { name: 'Software Testing', organization: 'NPTEL', score: 'Completed', icon: <FaBug />,file: `${process.env.PUBLIC_URL}/certificates/software-testing.pdf`, },
+    { name: 'HTML, CSS, and Javascript for Web Developers', organization: 'Johns Hopkins University - Coursera', score: 'Completed', icon: <FaCode />,file: `${process.env.PUBLIC_URL}/certificates/coursera.pdf`, },
+    { name: 'Cybersecurity Essentials', organization: 'Cisco Networking Academy', score: 'Completed', icon: <FaShieldAlt /> ,file: `${process.env.PUBLIC_URL}/certificates/cyber-security.pdf`,},
     { name: 'Java Programming', organization: 'Data Pro', score: 'Completed', icon: <FaJava /> },
     { name: 'AWS Workshop', organization: 'IIT Bombay', score: 'Completed', icon: <FaAws /> },
   ];
@@ -1116,7 +1121,7 @@ useEffect(() => {
 
       <nav style={styles.nav}>
         <div style={styles.logo} onClick={() => handleNavClick('home')}>
-          {'<DAG />'}
+          {'<Debhora/>'}
         </div>
         
         <div style={styles.navLinks}>
@@ -1457,7 +1462,24 @@ useEffect(() => {
                     <div style={styles.certificationDetails}>{cert.organization}</div>
                   </div>
                 </div>
-                <div style={styles.certificationScore}>{cert.score}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+  <div style={styles.certificationScore}>{cert.score}</div>
+
+  <FaEye
+    title="Preview Certificate"
+    style={{
+      cursor: 'pointer',
+      color: '#64ffda',
+      fontSize: '18px',
+    }}
+    onClick={() => {
+      setActiveCertificate(cert);
+      setShowCertModal(true);
+    }}
+  />
+</div>
+
+
               </div>
             ))}
           </div>
@@ -1701,6 +1723,60 @@ useEffect(() => {
           React JS Developer • MERN Stack Developer
         </p>
       </footer>
+      {showCertModal && (
+  <div
+    style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      background: 'rgba(0,0,0,0.8)',
+      zIndex: 2000,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+  >
+    <div
+      style={{
+        width: '80%',
+        height: '80%',
+        background: '#0a192f',
+        borderRadius: '16px',
+        position: 'relative',
+        overflow: 'hidden',
+        boxShadow: '0 30px 80px rgba(0,0,0,0.6)',
+      }}
+    >
+      {/* Close Button */}
+      <FaTimes
+        style={{
+          position: 'absolute',
+          top: '15px',
+          right: '20px',
+          color: '#64ffda',
+          cursor: 'pointer',
+          fontSize: '22px',
+          zIndex: 10,
+        }}
+        onClick={() => setShowCertModal(false)}
+      />
+
+      {/* Certificate Preview */}
+      <iframe
+        src={activeCertificate?.file}
+        title="Certificate Preview"
+        style={{
+          width: '100%',
+          height: '100%',
+          border: 'none',
+        }}
+      />
+    </div>
+  </div>
+)}
+
     </div>
   );
 };
