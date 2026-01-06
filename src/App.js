@@ -13,9 +13,9 @@ import {
   FaPalette,
   FaDatabase,
   FaRobot,
-  FaChartLine,
   FaShoppingCart,
   FaLeaf,
+  FaChartLine ,
   FaGraduationCap,
   FaBuilding,
   FaBars,
@@ -53,6 +53,7 @@ import {
   SiTkinter
 } from 'react-icons/si';
 import { GiProcessor } from 'react-icons/gi';
+import emailjs from "emailjs-com";
 
 const Portfolio = () => {
   const [activeSection, setActiveSection] = useState('home');
@@ -113,42 +114,40 @@ useEffect(() => {
       [name]: value
     }));
   };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+  setSubmitStatus(null);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus(null);
+  try {
+    await emailjs.send(
+  process.env.REACT_APP_EMAILJS_SERVICE,
+  process.env.REACT_APP_EMAILJS_TEMPLATE,
+  {
+    name: formData.name,
+    email: formData.email,
+    message: formData.message,
+  },
+  process.env.REACT_APP_EMAILJS_PUBLIC
+);
 
-    try {
-      const response = await mockSubmitToBackend(formData);
-      
-      if (response.success) {
-        setSubmitStatus({
-          type: 'success',
-          message: 'Message sent successfully! I\'ll get back to you soon.'
-        });
-        setFormData({ name: '', email: '', message: '' });
-      } else {
-        throw new Error('Submission failed');
-      }
-    } catch (error) {
-      setSubmitStatus({
-        type: 'error',
-        message: 'Failed to send message. Please try again or email me directly.'
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const mockSubmitToBackend = (data) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log('Message received:', data);
-        resolve({ success: true });
-      }, 1500);
+    setSubmitStatus({
+      type: "success",
+      message: "Message sent successfully! I'll get back to you soon."
     });
-  };
+
+    setFormData({ name: "", email: "", message: "" });
+  } catch (error) {
+    console.error(error);
+    setSubmitStatus({
+      type: "error",
+      message: "Failed to send message. Please try again."
+    });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   const handleResumeDownload = () => {
   if (isDownloading) return;
@@ -992,9 +991,9 @@ useEffect(() => {
   
   const experiences = [
     {
-      title: 'React JS Developer',
+      title: 'React JS Trainee',
       company: 'Mylas Technologies, Visakhapatnam, AP',
-      period: 'Current',
+      period: 'Sept 2025 - Present',
       bullets: [
         'Working on real-time projects using React',
         'Building dynamic and responsive user interfaces with Tailwind CSS',
@@ -1003,9 +1002,9 @@ useEffect(() => {
       ]
     },
     {
-      title: 'Front-End Developer Intern',
+      title: 'Front-End Intern',
       company: 'Kairos Technologies, Visakhapatnam, AP',
-      period: 'Internship',
+      period: 'April 2024 - May 2024',
       bullets: [
         'Developed an e-commerce website using the MERN stack',
         'Integrated REDUX for improved state management, reducing state-related bugs by 40%',
@@ -1022,8 +1021,10 @@ useEffect(() => {
     { name: 'Software Testing', organization: 'NPTEL', score: 'Completed', icon: <FaBug />,file: `${process.env.PUBLIC_URL}/certificates/software-testing.pdf`, },
     { name: 'HTML, CSS, and Javascript for Web Developers', organization: 'Johns Hopkins University - Coursera', score: 'Completed', icon: <FaCode />,file: `${process.env.PUBLIC_URL}/certificates/coursera.pdf`, },
     { name: 'Cybersecurity Essentials', organization: 'Cisco Networking Academy', score: 'Completed', icon: <FaShieldAlt /> ,file: `${process.env.PUBLIC_URL}/certificates/cyber-security.pdf`,},
+    { name: 'Introduction to Data Science', organization: 'SimpliLearn', score: 'Completed', icon: <FaChartLine  />,file: `${process.env.PUBLIC_URL}/certificates/data-science.pdf`, },
     { name: 'Java Programming', organization: 'Data Pro', score: 'Completed', icon: <FaJava /> },
     { name: 'AWS Workshop', organization: 'IIT Bombay', score: 'Completed', icon: <FaAws /> },
+    
   ];
 
   const socialLinks = [
